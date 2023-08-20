@@ -1,0 +1,7 @@
+--- 
+- name: test inventory
+  hosts: all 
+  tasks:
+    - name: print my vars
+      ansible.builtin.debug:
+        var: name
