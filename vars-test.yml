@@ -8,4 +8,45 @@
         name: "{{ java_package_name }}"
         state: present
         update_cache: true
-   
+    - name: create user 
+      ansible.builtin.user:
+        create_home: yes
+        name: "{{ user_name }}"
+        shell: "{{ user_shell}}"
+        home: "{{ user_home }}"
+        state: present
+    - name: create group
+      ansible.builtin.group:
+        name: "{{ group_name }}"
+        state: present
+    -  name: unzip tomcat
+       ansible.builtin.unarchive:
+         src: "https://downloads.apache.org/tomcat/tomcat-{{ tomcat_major_version }}/v{{ tomcat_version}}/bin/apache-tomcat-{{ tomcat_version}}.tar.gz"
+         dest: "{{ user_home }}"
+         remote_src: yes
+    - name: create symbolic link
+      ansible.builtin.file:
+        src: "{{ user_home }}/apache-tomcat-{{ tomcat_version}}"
+        dest: "{{ user_home }}/latest"
+        state: link 
+    - name: change ownr permission
+      ansible.builtin.file:
+        dest: "{{ user_home }}" 
+        owner: "{{ user_name }}"
+        group: "{{ group_name }}"
+        recurse: true 
+        state: directory 
+    - name: shell command
+      ansible.builtin.command: "sudo sh -c 'chmod +x {{ user_home }}/latest/bin/*.sh'"
+    - name: copy contant
+      ansible.builtin.copy:
+        src: "{{ tomcat_service_name }}"
+        dest: "/etc/systemd/system/{{ tomcat_service_name }}"
+        owner: "{{ user_name }}" 
+        group: "{{ group_name }}" 
+    - name: systemd reload deman 
+      ansible.builtin.systemd:
+        name: "{{ tomcat_service_name }}"
+        daemon_reload: yes 
+        enabled: yes 
+        state: started   
