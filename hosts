@@ -1,5 +1,10 @@
-[centos]
-172.31.46.28 name=centosnode1
+172.31.47.154 java_package_name=openjdk-11-jdk
 
-[ubuntu]
-172.31.43.186 name=ubuntunode2
+[appserver:vars]
+user_name=tomcat 
+group_name=tomcat 
+user_home=/opt/tomcat
+user_shell=/bin/fales
+tomcat_version="10.1.12"
+tomat_major_version="10"
+tomcat_service_name=tomcat.service

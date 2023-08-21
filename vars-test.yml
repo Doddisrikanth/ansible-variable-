@@ -1,7 +1,11 @@
---- 
-- name: test inventory
+---  
+- name: install tomcat 10
   hosts: all 
+  become: yes 
   tasks:
-    - name: print my vars
-      ansible.builtin.debug:
-        var: name
+    - name: install java
+      ansible.builtin.apt:
+        name: "{{ java_package_name }}"
+        state: present
+        update_cache: true
+   
